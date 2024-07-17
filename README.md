@@ -33,6 +33,7 @@ Vagrant alpine box credentials are:
 ### Install thanks docker-compose  
 ```
 sudo apt install docker-compose
+sudo gpasswd -a $USER docker
 git clone https://github.com/jossets/WordpressVuln
 docker-compose up
 ```
