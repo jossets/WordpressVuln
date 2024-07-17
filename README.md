@@ -7,7 +7,7 @@ A vulnerable wordpress site
 
 # Install 
 
-The vulnerable wordpress server run in :
+The vulnerable wordpress server could run in :
 - a virtual machine on an ubuntu host 
 - in a docker
 
