@@ -7,7 +7,7 @@ A vulnerable wordpress site
 
 # Install 
 
-The vulnerable wordpress server run in :
+The vulnerable wordpress server could run in :
 - a virtual machine on an ubuntu host 
 - in a docker
 
@@ -31,8 +31,11 @@ Vagrant alpine box credentials are:
 ## Docker 
 
 ### Install thanks docker-compose  
+
+Install docker & docker compose: https://docs.docker.com/engine/install/ubuntu/
+
 ```
-sudo apt install docker-compose
+sudo gpasswd -a $USER docker
 git clone https://github.com/jossets/WordpressVuln
 docker-compose up
 ```
