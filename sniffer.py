@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import sys
-import pprint
+import pprint as pprint
 from scapy.all import *
 
 from curses.ascii import isprint
@@ -11,7 +11,7 @@ def printable(input):
 
 
 # Function to handle each packet
-def handle_packet(packet, log):
+def handle_packet(packet, log, nbbytes):
     # Check if the packet contains TCP layer
     if packet.haslayer(TCP):
         # Extract source and destination IP addresses
@@ -23,11 +23,12 @@ def handle_packet(packet, log):
         
         tcp_payload = packet[TCP].payload        
         tcp_len = (len(packet[TCP].payload))
-        tcp_bytes = bytes(tcp_payload)[:80]
+        tcp_bytes = bytes(tcp_payload)[:nbbytes]
         tcp_utf8 = tcp_bytes.decode('UTF8','replace')
         #pprint.pprint(tcp_utf8)
         tcp_printable = printable("".join(tcp_utf8))
         print(f"TCP: {src_ip}:{src_port} -> {dst_ip}:{dst_port} {tcp_len} {tcp_printable}")
+        log.write(f"TCP: {src_ip}:{src_port} -> {dst_ip}:{dst_port} {tcp_len} {tcp_printable}\n")
     
     
     if packet.haslayer(DNS):
@@ -46,18 +47,14 @@ def handle_packet(packet, log):
 
 
 # Main function to start packet sniffing
-def main(interface, verbose=False):
+def main(interface, nbbytes):
     print("Sniffing: "+interface)
     # Create log file name based on interface
     logfile_name = f"sniffer_{interface}_log.txt"
     # Open log file for writing
     with open(logfile_name, 'w') as logfile:
         try:
-            # Start packet sniffing on specified interface with verbose output
-            if verbose:
-                sniff(iface=interface, prn=lambda pkt: handle_packet(pkt, logfile), store=0, verbose=verbose)
-            else:
-                sniff(iface=interface, prn=lambda pkt: handle_packet(pkt, logfile), store=0)
+            sniff(iface=interface, prn=lambda pkt: handle_packet(pkt, logfile, nbbytes), store=0)
         except KeyboardInterrupt:
             sys.exit(0)
 
@@ -65,8 +62,17 @@ def main(interface, verbose=False):
 if __name__ == "__main__":
     # Check if the correct number of arguments is provided
     print(sys.argv)
-    if len(sys.argv) < 2 or len(sys.argv) > 3:
-        print("Usage: ./sniffer.py <interface>")
+    if len(sys.argv) <2:
+        print("Usage: "+sys.argv[0]+" <interface> <nb bytes dumped=80>")
         sys.exit(1)
     
-    main(sys.argv[1])
+    nbbytes=0
+    if len(sys.argv) ==3:
+        try:
+            nbbytes=int(sys.argv[2])
+        except:
+            pass
+    if 0==nbbytes:
+        nbbytes=80
+
+    main(sys.argv[1], nbbytes)

