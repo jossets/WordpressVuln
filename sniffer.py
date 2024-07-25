@@ -20,6 +20,10 @@ def handle_packet(packet, log, nbbytes):
         # Extract source and destination ports
         src_port = packet[TCP].sport
         dst_port = packet[TCP].dport
+         
+        # Dont trace ssh
+        if 22==src_port or 22==dst_port:
+            return
         
         tcp_payload = packet[TCP].payload        
         tcp_len = (len(packet[TCP].payload))
